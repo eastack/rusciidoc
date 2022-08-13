@@ -1,0 +1,4 @@
+= Rusciidoc
+:lang: Rust
+
+The AsciiDoc implementation for Rust.
