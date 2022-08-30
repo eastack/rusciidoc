@@ -1,4 +1,6 @@
 = Rusciidoc
+Heng Yue Wang <admin@eastack.me>
 :lang: Rust
+:toc: left
 
 The AsciiDoc implementation for Rust.

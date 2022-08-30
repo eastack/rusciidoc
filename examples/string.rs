@@ -1,6 +1,6 @@
 use nom::{
     branch::alt,
-    bytes::complete::{is_not, tag, take_while_m_n},
+    bytes::complete::{is_not, take_while_m_n},
     character::{complete::multispace1, streaming::char},
     combinator::{map, map_opt, map_res, value, verify},
     error::{FromExternalError, ParseError},
