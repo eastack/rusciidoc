@@ -15,20 +15,20 @@ use nom::combinator::{cut, not};
 
 #[derive(Debug)]
 pub struct Document<'a> {
-    pub header: Section<'a>,
-    pub blocks: Block<'a>,
-    pub attrs: Vec<DocAttr<'a>>,
+    pub header: Header<'a>,
+    pub blocks: Section<'a>,
+    pub attrs: Vec<Attribute<'a>>,
 }
 
 #[derive(Debug)]
-pub struct DocHeader<'a> {
+pub struct Header<'a> {
     pub title: &'a str,
     pub auth_info: Option<AuthorInfo<'a>>,
-    pub attrs: Vec<DocAttr<'a>>,
+    pub attrs: Vec<Attribute<'a>>,
 }
 
 #[derive(Debug)]
-pub struct DocAttr<'a> {
+pub struct Attribute<'a> {
     pub unset: bool,
     pub name: &'a str,
     pub value: Option<&'a str>,
@@ -125,8 +125,7 @@ pub fn parse_author_line(i: &str) -> IResult<&str, AuthorInfo> {
     ))
 }
 
-
-pub fn parse_doc_header(i: &str) -> IResult<&str, DocHeader> {
+pub fn parse_doc_header(i: &str) -> IResult<&str, Header> {
     let (i, title) = preceded(
         pair(char('='), space1),
         terminated(is_not("\r\n"), line_ending),
@@ -137,7 +136,7 @@ pub fn parse_doc_header(i: &str) -> IResult<&str, DocHeader> {
 
     Ok((
         i,
-        DocHeader {
+        Header {
             title,
             auth_info,
             attrs,
@@ -145,14 +144,12 @@ pub fn parse_doc_header(i: &str) -> IResult<&str, DocHeader> {
     ))
 }
 
-pub fn parse_
-
 pub fn parse_doc_section(i: &str) -> IResult<&str, DocContent> {
     let line = delimited(line_ending, is_not("\r\n"), line_ending)(i)?;
 }
 
 /// 解析文档属性
-pub fn parse_doc_attr(i: &str) -> IResult<&str, DocAttr> {
+pub fn parse_doc_attr(i: &str) -> IResult<&str, Attribute> {
     let name = delimited(
         preceded(char(':'), space0),
         pair(opt(char('!')), take_while1(|c| c != ':')),
@@ -165,7 +162,7 @@ pub fn parse_doc_attr(i: &str) -> IResult<&str, DocAttr> {
 
     Ok((
         i,
-        DocAttr {
+        Attribute {
             unset: unset.is_some(),
             name,
             value,
@@ -186,6 +183,7 @@ Wang  Yue Heng  <admin@eastack.me>
 #[cfg(test)]
 mod tests {
     use nom::Parser;
+    use rusciidoc::test_from_lib;
 
     use super::*;
 
